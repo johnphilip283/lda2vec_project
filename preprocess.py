@@ -10,7 +10,6 @@ import os
 class DataProcessor:
 
     def __init__(self, df, textcol, max_features=30000, window_size=5):
-
         self.df = df
         self.textcol = textcol
         self.disallowed = ("ax>", '`@("', '---', '===', '^^^', "AX>", "GIZ")
@@ -23,7 +22,6 @@ class DataProcessor:
         return ' '.join(word for word in line.split() if not any(term in word for term in self.disallowed))
 
     def preprocess(self, path_to_save):
-
         texts = [str(self.clean(text)) for text in self.df[self.textcol].values.tolist()]
         texts_clean = []
 
@@ -78,4 +76,3 @@ class DataProcessor:
         np.save(f"{path_to_save}/freqs", freqs)
 
         skipgrams_df.to_csv(f"{path_to_save}/skipgrams.txt", sep="\t", index=False, header=None)
-        
