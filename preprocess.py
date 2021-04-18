@@ -1,5 +1,6 @@
 from keras.preprocessing.text import Tokenizer
 from keras.preprocessing.sequence import skipgrams
+from spacy.lang.en import English
 import pandas as pd
 import numpy as np
 import spacy
@@ -15,9 +16,8 @@ class DataProcessor:
         self.disallowed = ("ax>", '`@("', '---', '===', '^^^', "AX>", "GIZ")
         self.max_features = max_features
         self.window_size = window_size
-        self.nlp = spacy.load("en_core_web_sm", disable = ['ner', 'parser'])
-        self.nlp.vocab.add_flag(lambda s: s.lower() in spacy.lang.en.stop_words.STOP_WORDS,
-                                                       spacy.attrs.IS_STOP)
+        self.nlp = English()
+        self.nlp.vocab.add_flag(lambda s: s.lower() in spacy.lang.en.stop_words.STOP_WORDS, spacy.attrs.IS_STOP)
 
     def clean(self, line):
         return ' '.join(word for word in line.split() if not any(term in word for term in self.disallowed))
@@ -27,7 +27,7 @@ class DataProcessor:
         texts = [str(self.clean(text)) for text in self.df[self.textcol].values.tolist()]
         texts_clean = []
 
-        for doc in self.nlp.pipe(texts, n_threads=4):          
+        for doc in self.nlp.pipe(texts, disable=['ner', 'parser']):          
             texts_clean.append(" ".join([token.lower_ for token in doc if token.is_alpha and not token.is_stop]))
 
         tokenizer = Tokenizer(self.max_features, filters="", lower=False)
