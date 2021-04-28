@@ -25,7 +25,7 @@ class DataProcessor:
         texts = [str(self.clean(text)) for text in self.df[self.textcol].values.tolist()]
         texts_clean = []
 
-        for doc in self.nlp.pipe(texts, disable=['ner', 'parser']):          
+        for doc in self.nlp.pipe(texts, disable=['ner', 'parser']):
             texts_clean.append(" ".join([token.lower_ for token in doc if token.is_alpha and not token.is_stop]))
 
         tokenizer = Tokenizer(self.max_features, filters="", lower=False)
@@ -42,7 +42,6 @@ class DataProcessor:
         freqs = [tokenizer.word_counts[idx_to_word[i]] for i in range(vocab_size)]
 
         skipgram_data = []
-        excluded_docs = []
         doc_lengths = []
 
         doc_id_counter = 0
@@ -57,8 +56,6 @@ class DataProcessor:
                     skipgram_data.append(temp_data)
                 doc_lengths.append(len(text))
                 doc_id_counter += 1
-            else:
-                excluded_docs.append(i)
 
         skipgrams_df = pd.DataFrame(skipgram_data)
 
