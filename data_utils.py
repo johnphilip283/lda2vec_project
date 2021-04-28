@@ -2,6 +2,7 @@ import pickle
 import numpy as np
 import pandas as pd
 from sklearn.utils import shuffle
+import random
 
 def load_preprocessed_data(data_path, shuffle_data=True):
   
@@ -24,3 +25,10 @@ def load_preprocessed_data(data_path, shuffle_data=True):
 
     return (idx_to_word, word_to_idx, freqs, pivot_ids, target_ids, doc_ids)
 
+def chunks(n, *args):
+    keypoints = []
+    for i in range(0, len(args[0]), n):
+        keypoints.append((i, i + n))
+    random.shuffle(keypoints)
+    for a, b in keypoints:
+        yield [arg[a: b] for arg in args]
